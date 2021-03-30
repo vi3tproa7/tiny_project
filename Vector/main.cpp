@@ -1,143 +1,229 @@
-// to write Vector class here
+/* Class Vector */
+
 #include <iostream>
 using namespace std;
 
 class Vector
 {
 private:
-    double* mData;  // pointer point to the 1st element of vector
-    int mSize;      // the size of vector
+    double* m_data;  // pointer point to the 1st element of vector
+    int m_size;      // the size of vector
 public:
-    // parametered constructor
-    Vector(int mSize);
+    // Parametered constructor
+    Vector(int m_size);
 
-    // destructor
+    // Destructor
     ~Vector();
 
-    // copy constructor
+    // Copy constructor
     Vector(const Vector &other);
 
-    void setData()
-    {
-        cout << "Input the data by hand"
-        for(int i = 0; i < mSize; i++)
-            cin >> mData[i];
-    }
-    void print()
-    {
-        for(int i = 0; i < mSize; i++)
-            cout << mData[i] << " ";
-        cout << endl;
-    }
+    // Set the data of the vector by key board
+    void set_data();
 
-    // Addition
-    Vector operator+(const Vector& b)
-    {
-        if(this->mSize != b.mSize)
-            cout << "Wrong Size";
-        else
-        {
-        Vector v(this->mSize);
+    // Display all element of the vector
+    void display();
 
-        for(int i = 0; i < b.mSize; i++)
-            v.mData[i] = this->mData[i] - b.mData[i];
-        return v;
-        }
-    }
+    // Assignment operation
+    Vector& operator=(const Vector& rhs);
 
-    // Substraction
-    Vector operator-(const Vector& b)
-    {
-        if(this->mSize != b.mSize)
-            cout << "Wrong Size";
-        else
-        {
-        Vector v(this->mSize);
+    // Addition operation between 2 vectors
+    friend Vector operator+(const Vector& a, const Vector& b);
 
-        for(int i = 0; i < b.mSize; i++)
-            v.mData[i] = this->mData[i] - b.mData[i];
-        return v;
-        }
-    }
+    // Subtraction operation between 2 vector
+    friend Vector operator-(const Vector& a, const Vector& b);
 
-    // Scalar Multiplication
-    Vector operator*(double b)
-    {
-        Vector v(mSize);
+    // Unary - operator
+    Vector operator-();
 
-        for(int i = 0; i < mSize; i++)
-            v.mData[i] = mData[i] * b;
-        return v;
-    }
+    // Scalar multiplication operation 1
+    // Vector is the 1st operand
+    friend Vector operator*(const Vector& v, const double a);
 
-    // Unary -
-    Vector operator-()
-    {
-        Vector v(mSize);
+    // Scalar multiplication operation 2
+    // Vector is the 2nd operand
+    friend Vector operator*(const double a, const Vector& v);
 
-        for(int i = 0; i < mSize; i++)
-            v.mData[i] = - mData[i];
-        return v;
-    }
+    // Dot product between 2 vector
+    friend double operator*(const Vector& a, const Vector& b);
 
-    // Dot product
-//    double operator*(const Vector a, const Vector b)
-//    {
-//        double dotProduct = 0;
-//
-//        for(int i = 0; i < a.mSize; i++)
-//            dotProduct += a.mData[i] * b.mData[i];
-//        return dotProduct;
-//    }
+    // () overloaded to access the entry in the vector
+    // the indexing starts from 1
+    double operator()(int i);
+
+    // [] overloaded to check whether the index lies
+    // within the correct range, indexing starts at 1
+    bool operator[](int i);
 };
 
-Vector::Vector(int mSize)
+Vector::Vector(int m_size)
 {
-        this->mSize = mSize;
-        this->mData = new double[mSize];
+    this->m_size = m_size;
+    m_data = new double[m_size];
 
-        // initialize right away
-        for(int i = 0; i < mSize; i++)
-            mData[i] = 0;
+    // initialize right away
+    for(int i = 0; i < m_size; i++)
+        m_data[i] = 0;
 }
 
 Vector::~Vector()
 {
-    delete[] mData;
+    delete[] m_data;
 }
 
 Vector::Vector(const Vector &other)
 {
-    mSize = other.mSize;
-    mData = new double[mSize];
+    m_size = other.m_size;
+    m_data = new double[m_size];
 
-    for(int i = 0; i < mSize; i++)
+    for(int i = 0; i < m_size; i++)
     {
-        mData[i] = other.mData[i];
+        m_data[i] = other.m_data[i];
+    }
+
+    // *this = other;  /* Google's style ? */ => error ?
+}
+
+void Vector::set_data()
+{
+    cout << "Input the data for by key board" << endl;
+    for(int i = 0; i < m_size; i++)
+    {
+        cout << "m_data[" << i << "] = ";
+        cin >> m_data[i];
     }
 }
 
+void Vector::display()
+{
+    for(int i = 0; i < m_size; i++)
+        cout << m_data[i] << " ";
+    cout << endl;
+}
+
+Vector& Vector::operator=(Vector const& rhs)
+{
+    if(m_size != rhs.m_size)
+        cout << "Wrong Size";
+    else
+    {
+        for(int i = 0; i < m_size; i++)
+            m_data[i] = rhs.m_data[i];
+
+        return *this;
+    }
+}
+
+Vector operator+(const Vector& a, const Vector& b)
+{
+    if(a.m_size != b.m_size)
+        cout << "Wrong Size";
+    else
+    {
+        Vector c(a.m_size);
+
+        for(int i = 0; i < a.m_size; i++)
+            c.m_data[i] = a.m_data[i] + b.m_data[i];
+
+        return c;
+    }
+}
+
+Vector operator-(const Vector& a, const Vector& b)
+{
+    if(a.m_size != b.m_size)
+        cout << "Wrong Size";
+    else
+    {
+        Vector c(a.m_size);
+
+        for(int i = 0; i < a.m_size; i++)
+            c.m_data[i] = a.m_data[i] - b.m_data[i];
+
+        return c;
+    }
+}
+
+Vector Vector::operator-()
+{
+    Vector c(m_size);
+
+    for(int i = 0; i < m_size; i++)
+            c.m_data[i] = -m_data[i];
+
+    return c;
+}
+
+Vector operator*(const Vector& v, const double a)
+{
+    Vector c(v.m_size);
+
+    for(int i = 0; i < v.m_size; i++)
+        c.m_data[i] = v.m_data[i] * a;
+
+    return c;
+}
+
+Vector operator*(const double a, const Vector& v)
+{
+    Vector c(v.m_size);
+
+    for(int i = 0; i < v.m_size; i++)
+        c.m_data[i] = v.m_data[i] * a;
+
+    return c;
+}
+
+double operator*(const Vector& a, const Vector& b)
+{
+    if(a.m_size != b.m_size)
+        cout << "Wrong size";
+    else
+    {
+        double c = 0;
+
+        for(int i = 0; i < a.m_size; i++)
+            c += a.m_data[i] * b.m_data[i];
+
+        return c;
+    }
+}
+
+double Vector::operator()(int i)
+{
+    if (i < 1 || i > m_size)
+        cout << "Wrong index";
+    else
+        return m_data[i - 1];
+}
+
+bool Vector::operator[](int i)
+{
+    if (i >= 1 && i <= m_size)
+        return true;
+    else
+        return false;
+}
+
+// Driver code
 int main(void)
 {
 
     Vector v1(5);
+    v1.set_data();
+    v1.display();
+    cout << v1(5) << endl;
+    cout << v1[1] << " " << v1[6] << endl;
+    // Vector v2 = v1;
+    Vector v2(5);
+    v2 = v1;
+    v2.display();
 
+    Vector v3 = -v2;
+    v3.display();
 
-
-    // v1.setData();
-    v1.print();
-    // v2.setData();
-    Vector v2 = v1;
-    v2.print();
-
-    Vector v3(5);
-    v3 = -v2;
-    v3.print();
-
-    Vector v4(5);
-    v4 = v1 * 2;
-    v4.print();
+    Vector v4 = 2 * v1 * 2;
+    v4.display();
 
     return 0;
 }
-
