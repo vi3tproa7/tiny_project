@@ -8,27 +8,18 @@ private:
     double* mData;  // pointer point to the 1st element of vector
     int mSize;      // the size of vector
 public:
-    // parameter constructor, no arg
-    Vector(int mSize)
-    {
-        this->mSize = mSize;
-        mData = new double[mSize];
-        // initialize right away
-        for(int i = 0; i < mSize; i++)
-            mData[i] = 0;
-        // Should I add cin here ?
-    }
+    // parametered constructor
+    Vector(int mSize);
 
-    ~Vector()
-    {
-        delete[] mData;
-    }
+    // destructor
+    ~Vector();
 
-    // need a copy constructor
-    Vector(const Vector & b);
+    // copy constructor
+    Vector(const Vector &other);
 
     void setData()
     {
+        cout << "Input the data by hand"
         for(int i = 0; i < mSize; i++)
             cin >> mData[i];
     }
@@ -100,22 +91,43 @@ public:
 //    }
 };
 
-//Vector::Vector(const Vector &another)
-//{
-//    mSize = other.mSize;
-//    for(int )
-//}
+Vector::Vector(int mSize)
+{
+        this->mSize = mSize;
+        this->mData = new double[mSize];
+
+        // initialize right away
+        for(int i = 0; i < mSize; i++)
+            mData[i] = 0;
+}
+
+Vector::~Vector()
+{
+    delete[] mData;
+}
+
+Vector::Vector(const Vector &other)
+{
+    mSize = other.mSize;
+    mData = new double[mSize];
+
+    for(int i = 0; i < mSize; i++)
+    {
+        mData[i] = other.mData[i];
+    }
+}
 
 int main(void)
 {
 
     Vector v1(5);
-    Vector v2(5);
 
 
-    v1.setData();
+
+    // v1.setData();
     v1.print();
-    v2.setData();
+    // v2.setData();
+    Vector v2 = v1;
     v2.print();
 
     Vector v3(5);
@@ -129,10 +141,3 @@ int main(void)
     return 0;
 }
 
-// default constructor, no arg
-//    Vector()
-//    {
-//        mSize = 0;
-//        mData = new double[mSize];
-//    }
-    // maybe no need now
