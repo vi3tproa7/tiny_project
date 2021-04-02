@@ -27,14 +27,17 @@ public:
     // Assignment operation
     Vector& operator=(const Vector& rhs);
 
+    // Unary + operator
+    Vector operator+();
+
+    // Unary - operator
+    Vector operator-();
+
     // Addition operation between 2 vectors
     friend Vector operator+(const Vector& a, const Vector& b);
 
     // Subtraction operation between 2 vector
     friend Vector operator-(const Vector& a, const Vector& b);
-
-    // Unary - operator
-    Vector operator-();
 
     // Scalar multiplication operation 1
     // Vector is the 1st operand
@@ -52,7 +55,7 @@ public:
     double operator()(int i);
 
     // [] overloaded to check whether the index lies
-    // within the correct range, indexing starts at 1
+    // within the correct range, indexing starts at 1 ?check
     bool operator[](int i);
 };
 
@@ -114,6 +117,27 @@ Vector& Vector::operator=(Vector const& rhs)
     }
 }
 
+Vector Vector::operator-()
+{
+    Vector c(m_size);
+
+    for(int i = 0; i < m_size; i++)
+            c.m_data[i] = -m_data[i];
+
+    return c;
+}
+
+Vector Vector::operator+()
+{
+    Vector c(m_size);
+
+    for(int i = 0; i < m_size; i++)
+            c.m_data[i] = m_data[i];
+
+    return c;
+}
+
+
 Vector operator+(const Vector& a, const Vector& b)
 {
     if(a.m_size != b.m_size)
@@ -142,16 +166,6 @@ Vector operator-(const Vector& a, const Vector& b)
 
         return c;
     }
-}
-
-Vector Vector::operator-()
-{
-    Vector c(m_size);
-
-    for(int i = 0; i < m_size; i++)
-            c.m_data[i] = -m_data[i];
-
-    return c;
 }
 
 Vector operator*(const Vector& v, const double a)
