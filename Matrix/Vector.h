@@ -1,8 +1,12 @@
-/* Class Vector */
+// Vector.h
+#ifndef Vector_h
+#define Vector_h
 
 #include <iostream>
+// #include "Matrix.h"
 using namespace std;
 
+class Matrix;
 class Vector
 {
 private:
@@ -57,6 +61,9 @@ public:
     // [] overloaded to check whether the index lies
     // within the correct range, indexing starts at 1 ?check
     bool operator[](int i);
+
+    // Matrix Multiplication between Matrix and Vector
+    friend Vector operator*(const Matrix& a, const Vector& b);
 };
 
 Vector::Vector(int m_size)
@@ -219,25 +226,6 @@ bool Vector::operator[](int i)
         return false;
 }
 
-// Driver code
-int main(void)
-{
+#endif // Vector_h
 
-    Vector v1(5);
-    v1.set_data();
-    v1.display();
-    cout << v1(5) << endl;
-    cout << v1[1] << " " << v1[6] << endl;
-    // Vector v2 = v1;
-    Vector v2(5);
-    v2 = v1;
-    v2.display();
 
-    Vector v3 = -v2;
-    v3.display();
-
-    Vector v4 = 2 * v1 * 2;
-    v4.display();
-
-    return 0;
-}
