@@ -236,7 +236,7 @@ int main(void)
     Vector v3 = -v2;
     v3.display();
 
-    Vector v4 = 2 * v1 * 2;
+    Vector v4 = 2 * v1 * 3;
     v4.display();
 
     return 0;

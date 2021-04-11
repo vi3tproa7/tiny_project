@@ -3,10 +3,13 @@
 #define Vector_h
 
 #include <iostream>
-// #include "Matrix.h"
+#include <cassert>
 using namespace std;
 
+// need a prototype of class Matrix here for operation
+// between 2 distinct classes
 class Matrix;
+
 class Vector
 {
 private:
@@ -113,15 +116,12 @@ void Vector::display()
 
 Vector& Vector::operator=(Vector const& rhs)
 {
-    if(m_size != rhs.m_size)
-        cout << "Wrong Size";
-    else
-    {
-        for(int i = 0; i < m_size; i++)
-            m_data[i] = rhs.m_data[i];
+    assert(m_size == rhs.m_size);
 
-        return *this;
-    }
+    for(int i = 0; i < m_size; i++)
+        m_data[i] = rhs.m_data[i];
+
+    return *this;
 }
 
 Vector Vector::operator-()
@@ -147,17 +147,14 @@ Vector Vector::operator+()
 
 Vector operator+(const Vector& a, const Vector& b)
 {
-    if(a.m_size != b.m_size)
-        cout << "Wrong Size";
-    else
-    {
-        Vector c(a.m_size);
+    assert(a.m_size == b.m_size);
 
-        for(int i = 0; i < a.m_size; i++)
-            c.m_data[i] = a.m_data[i] + b.m_data[i];
+    Vector c(a.m_size);
 
-        return c;
-    }
+    for(int i = 0; i < a.m_size; i++)
+        c.m_data[i] = a.m_data[i] + b.m_data[i];
+
+    return c;
 }
 
 Vector operator-(const Vector& a, const Vector& b)

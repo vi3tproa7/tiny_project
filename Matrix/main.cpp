@@ -3,7 +3,9 @@
 
 #include <iostream>
 #include <cassert>
+#include <cstring>
 #include "Vector.h"
+#include <bits/stdc++.h>
 using namespace std;
 
 class Matrix
@@ -64,6 +66,18 @@ public:
 
     // Matrix Multiplication between Matrix and Vector
     friend Vector operator*(const Matrix& a, const Vector& b);
+
+    // Matrix Transpose
+    Matrix operator^(string T);
+
+    // Matrix Inverse, i must be -1
+    Matrix operator^(int i);
+
+    // Matrix Determinant
+    double det();
+
+    // Matrix test value
+    void test();
 };
 
 // This constructor allocates memory for the matrix
@@ -125,7 +139,7 @@ void Matrix::display()
     for(int i = 0; i < m_num_rows; i++)
     {
         for(int j = 0; j < m_num_cols; j++)
-            cout << m_data[i][j] << " ";
+            cout << setw(5) << m_data[i][j];
         cout << endl;
     }
     cout << endl;
@@ -135,7 +149,10 @@ void Matrix::set_data()
 {
     for(int i = 0; i < m_num_rows; i++)
         for(int j = 0; j < m_num_cols; j++)
-            m_data[i][j] = i * m_num_cols + j;
+        {
+            cout << "m_data[" << i << "]" << "[" << j << "] = ";
+            cin >> m_data[i][j];
+        }
 }
 
 double Matrix::operator()(int i, int j)
@@ -266,9 +283,107 @@ Vector operator*(const Matrix& a, const Vector& b)
     return c;
 }
 
+Matrix Matrix::operator^(string T)
+{
+    assert(T == "T"); // OK, make sure the user mean A-transpose
+
+    Matrix c(m_num_cols, m_num_rows);    // Size of transpose matrix is reversed
+    for(int i = 0; i < m_num_cols; i++)
+        for(int j = 0; j < m_num_rows; j++)
+            c.m_data[i][j] = m_data[j][i];
+
+    return c;
+}
+
+Matrix Matrix::operator^(int i)
+{
+    assert(i == -1);
+
+}
+
+double Matrix::det()
+{
+    assert(m_num_rows == m_num_cols && m_num_rows!= 0);   // only square matrix has determinant
+
+    int n = m_num_rows;
+    double lower[n][n], upper[n][n];
+    memset(lower, 0, sizeof(lower));
+    memset(upper, 0, sizeof(upper));
+
+    // Decomposing matrix into Upper and Lower
+    // triangular matrix
+    for (int i = 0; i < n; i++)
+    {
+        // Upper Triangular
+        for (int k = i; k < n; k++)
+        {
+            // Summation of L(i, j) * U(j, k)
+            double sum = 0;
+            for (int j = 0; j < i; j++)
+                sum += (lower[i][j] * upper[j][k]);
+
+            // Evaluating U(i, k)
+            upper[i][k] = m_data[i][k] - sum;
+        }
+
+        // Lower Triangular
+        for (int k = i; k < n; k++)
+        {
+            if (i == k)
+                lower[i][i] = 1; // Diagonal as 1
+            else
+            {
+                // Summation of L(k, j) * U(j, i)
+                double sum = 0;
+                for (int j = 0; j < i; j++)
+                    sum += (lower[k][j] * upper[j][i]);
+
+                // Evaluating L(k, i)
+                lower[k][i]
+                    = (m_data[k][i] - sum) / upper[i][i];
+            }
+        }
+    }
+
+/* old code for testing, do not want to delete
+   to remind me that the need of doing unit/func test carefully
+   before going further or integrating in the system*/
+//    for(int i = 0; i < n; i++)
+//    {
+//        for(int j = 0; j < n; j++)
+//            cout << upper[i][j] << " ";
+//        cout << endl;
+//    }
+//    cout << endl;
+
+    double det = 1;
+
+    for(int i = 0; i < n; i++)
+        det *= upper[i][i];
+
+    return det;
+}
+
+// just test for 3x3 matrix
+void Matrix::test()
+{
+    assert(m_num_rows == m_num_cols && m_num_rows == 3);    // careful with compare expression
+
+    double test[3][3] = {{1, 5, 0}, {2, 3, -1}, {0, -2, 0}};
+    for(int i = 0; i < 3; i++)
+        for(int j = 0; j < 3; j++)
+            m_data[i][j] = test[i][j];
+}
 
 // Driver code
 int main(void)
 {
+    Matrix A(3, 3);
+    A.test();
+    A.display();
+
+    cout << A.det();
+
+
     return 0;
 }
