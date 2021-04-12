@@ -19,7 +19,7 @@ public:
     Matrix(int m_num_rows, int m_num_cols);
 
     // Copy constructor
-    Matrix(Matrix& other);
+    Matrix(const Matrix& other);
 
     // Destructor
     ~Matrix();
@@ -99,7 +99,7 @@ Matrix::Matrix(int m_num_rows, int m_num_cols)
             m_data[i][j] = 0;
 }
 
-Matrix::Matrix(Matrix& other)
+Matrix::Matrix(const Matrix& other)
 {
     m_num_rows = other.m_num_rows;
     m_num_cols = other.m_num_cols;
@@ -157,25 +157,21 @@ void Matrix::set_data()
 
 double Matrix::operator()(int i, int j)
 {
-    if(!(i >= 1 && i <= m_num_rows && j >=1 && j <= m_num_cols))
-        cout << "Invalid indexing";
-    else
-        return m_data[i - 1][j - 1];
+    assert(i >= 1 && i <= m_num_rows && j >=1 && j <= m_num_cols);
+
+    return m_data[i - 1][j - 1];
 }
 
 // need to check again this copy assignment p.74/the C++ PL - Bjarne Stroustrup
 Matrix& Matrix::operator=(const Matrix& rhs)
 {
-    if(m_num_rows != rhs.m_num_rows || m_num_cols != rhs.m_num_cols)
-        cout << "Wrong Size";
-    else
-    {
-        for(int i = 0; i < m_num_rows; i++)
-            for(int j = 0; j < m_num_cols; j++)
-                m_data[i][j] = rhs.m_data[i][j];
+    assert(m_num_rows == rhs.m_num_rows && m_num_cols == rhs.m_num_cols);
 
-        return *this;
-    }
+    for(int i = 0; i < m_num_rows; i++)
+        for(int j = 0; j < m_num_cols; j++)
+            m_data[i][j] = rhs.m_data[i][j];
+
+    return *this;
 }
 
 Matrix Matrix::operator+()
@@ -202,34 +198,26 @@ Matrix Matrix::operator-()
 
 Matrix operator+(const Matrix& a, const Matrix& b)
 {
-    if(a.m_num_rows != b.m_num_rows || a.m_num_cols != b.m_num_cols)
-        cout << "2 Matrices do not have the same size";
-    else
-    {
-        Matrix c(a.m_num_rows, a.m_num_cols);
+    assert(a.m_num_rows == b.m_num_rows && a.m_num_cols == b.m_num_cols);
 
-        for(int i = 0; i < a.m_num_rows; i++)
-            for(int j = 0; j < a.m_num_cols; j++)
-                c.m_data[i][j] = a.m_data[i][j] + b.m_data[i][j];
+    Matrix c(a.m_num_rows, a.m_num_cols);
+    for(int i = 0; i < a.m_num_rows; i++)
+        for(int j = 0; j < a.m_num_cols; j++)
+            c.m_data[i][j] = a.m_data[i][j] + b.m_data[i][j];
 
-        return c;
-    }
+    return c;
 }
 
 Matrix operator-(const Matrix& a, const Matrix& b)
 {
-    if(a.m_num_rows != b.m_num_rows || a.m_num_cols != b.m_num_cols)
-        cout << "2 Matrices do not have the same size";
-    else
-    {
-        Matrix c(a.m_num_rows, a.m_num_cols);
+    assert(a.m_num_rows == b.m_num_rows && a.m_num_cols == b.m_num_cols);
 
+    Matrix c(a.m_num_rows, a.m_num_cols);
         for(int i = 0; i < a.m_num_rows; i++)
             for(int j = 0; j < a.m_num_cols; j++)
                 c.m_data[i][j] = a.m_data[i][j] - b.m_data[i][j];
 
-        return c;
-    }
+    return c;
 }
 
 Matrix operator*(const Matrix& a, const Matrix& b)
@@ -298,6 +286,68 @@ Matrix Matrix::operator^(string T)
 Matrix Matrix::operator^(int i)
 {
     assert(i == -1);
+    assert(m_num_rows == m_num_cols && m_num_rows!= 0);   // only square matrix has inverse
+
+    int n = m_num_rows;
+    double lower[n][n], upper[n][n];
+    memset(lower, 0, sizeof(lower));
+    memset(upper, 0, sizeof(upper));
+
+    // Decomposing matrix into Upper and Lower
+    // triangular matrix
+    for (int i = 0; i < n; i++)
+    {
+        // Upper Triangular
+        for (int k = i; k < n; k++)
+        {
+            // Summation of L(i, j) * U(j, k)
+            double sum = 0;
+            for (int j = 0; j < i; j++)
+                sum += (lower[i][j] * upper[j][k]);
+
+            // Evaluating U(i, k)
+            upper[i][k] = m_data[i][k] - sum;
+        }
+
+        // Lower Triangular
+        for (int k = i; k < n; k++)
+        {
+            if (i == k)
+                lower[i][i] = 1; // Diagonal as 1
+            else
+            {
+                // Summation of L(k, j) * U(j, i)
+                double sum = 0;
+                for (int j = 0; j < i; j++)
+                    sum += (lower[k][j] * upper[j][i]);
+
+                // Evaluating L(k, i)
+                lower[k][i]
+                    = (m_data[k][i] - sum) / upper[i][i];
+            }
+        }
+    }
+
+    // be sure that the input matrix have inverse
+    double det = 1;
+
+    for(int i = 0; i < n; i++)
+        det *= upper[i][i];
+    if(det == 0)
+    {
+        cout << "The input matrix has det = 0, can not inverse!";
+        exit(-1);
+    }
+
+    // Calculate L^-1
+    for(int i = 0; i < n; i++)
+        for(int j = 0; j < i; j++)
+            lower[i][j] = -lower[i][j];  // order of (-)unary higher than (=)assignment operator
+
+    // Caluclate U^-1
+    for(int i = 0; i < n; i++)
+        for(int j = i; j < n; j++)
+            upper[i][j] /= upper[i][i];
 
 }
 
@@ -379,11 +429,22 @@ void Matrix::test()
 int main(void)
 {
     Matrix A(3, 3);
+    // Matrix B(2, 2);
     A.test();
     A.display();
+    // C.display();
+    Vector b(3);
+    b.set_data();
 
-    cout << A.det();
-
+    Vector C = A * b;
+    C.display();
+//    A.test();
+//    A.display();
+//
+//    cout << A.det();
+//
+//    Matrix C = (A * 2);
+//    C.display();
 
     return 0;
 }

@@ -1,11 +1,12 @@
 # depslib dependency file v1.0
-1618150624 source:c:\users\yeuha\desktop\c++\big_project\tiny_project\matrix\main.cpp
+1618235028 source:c:\users\yeuha\desktop\c++\big_project\tiny_project\matrix\main.cpp
 	<iostream>
 	<cassert>
 	<cstring>
 	"Vector.h"
+	<bits/stdc++.h>
 
-1618149049 c:\users\yeuha\desktop\c++\big_project\tiny_project\matrix\vector.h
+1618235076 c:\users\yeuha\desktop\c++\big_project\tiny_project\matrix\vector.h
 	<iostream>
 	<cassert>
 

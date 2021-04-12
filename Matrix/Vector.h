@@ -1,7 +1,7 @@
 // Vector.h
 #ifndef Vector_h
 #define Vector_h
-
+// #pragma once
 #include <iostream>
 #include <cassert>
 using namespace std;
@@ -31,7 +31,7 @@ public:
     // Display all element of the vector
     void display();
 
-    // Assignment operation
+    // Copy assignment
     Vector& operator=(const Vector& rhs);
 
     // Unary + operator
@@ -114,7 +114,7 @@ void Vector::display()
     cout << endl;
 }
 
-Vector& Vector::operator=(Vector const& rhs)
+Vector& Vector::operator=(const Vector& rhs)
 {
     assert(m_size == rhs.m_size);
 
@@ -159,17 +159,13 @@ Vector operator+(const Vector& a, const Vector& b)
 
 Vector operator-(const Vector& a, const Vector& b)
 {
-    if(a.m_size != b.m_size)
-        cout << "Wrong Size";
-    else
-    {
-        Vector c(a.m_size);
+    assert(a.m_size == b.m_size);
 
-        for(int i = 0; i < a.m_size; i++)
-            c.m_data[i] = a.m_data[i] - b.m_data[i];
+    Vector c(a.m_size);
+    for(int i = 0; i < a.m_size; i++)
+        c.m_data[i] = a.m_data[i] - b.m_data[i];
 
-        return c;
-    }
+    return c;
 }
 
 Vector operator*(const Vector& v, const double a)
@@ -194,30 +190,25 @@ Vector operator*(const double a, const Vector& v)
 
 double operator*(const Vector& a, const Vector& b)
 {
-    if(a.m_size != b.m_size)
-        cout << "Wrong size";
-    else
-    {
-        double c = 0;
+    assert(a.m_size == b.m_size);
 
-        for(int i = 0; i < a.m_size; i++)
-            c += a.m_data[i] * b.m_data[i];
+    double c = 0;
+    for(int i = 0; i < a.m_size; i++)
+        c += a.m_data[i] * b.m_data[i];
 
-        return c;
-    }
+    return c;
 }
 
 double Vector::operator()(int i)
 {
-    if (i < 1 || i > m_size)
-        cout << "Wrong index";
-    else
-        return m_data[i - 1];
+    assert(i >= 1 && i <= m_size);
+
+    return m_data[i - 1];
 }
 
 bool Vector::operator[](int i)
 {
-    if (i >= 1 && i <= m_size)
+    if(i >= 1 && i <= m_size)
         return true;
     else
         return false;

@@ -74,7 +74,7 @@ Vector::~Vector()
     delete[] m_data;
 }
 
-Vector::Vector(const Vector &other)
+Vector::Vector(const Vector& other)
 {
     m_size = other.m_size;
     m_data = new double[m_size];
@@ -104,7 +104,7 @@ void Vector::display()
     cout << endl;
 }
 
-Vector& Vector::operator=(Vector const& rhs)
+Vector& Vector::operator=(const Vector& rhs)
 {
     if(m_size != rhs.m_size)
         cout << "Wrong Size";
