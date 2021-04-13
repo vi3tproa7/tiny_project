@@ -78,6 +78,14 @@ public:
 
     // Matrix test value
     void test();
+
+    // Set all elements of matrix
+    // to zero for calculating
+    void zero_set();
+
+    // LU Decomposition, Need both L and U
+    // only choice is a class ?
+    friend class LU;
 };
 
 // This constructor allocates memory for the matrix
@@ -340,15 +348,47 @@ Matrix Matrix::operator^(int i)
     }
 
     // Calculate L^-1
+
     for(int i = 0; i < n; i++)
         for(int j = 0; j < i; j++)
             lower[i][j] = -lower[i][j];  // order of (-)unary higher than (=)assignment operator
 
-    // Caluclate U^-1
     for(int i = 0; i < n; i++)
-        for(int j = i; j < n; j++)
-            upper[i][j] /= upper[i][i];
+    {
+        for(int j = 0; j < n; j++)
+            cout << lower[i][j] << " ";
+        cout << endl;
+    }
+    cout << endl;
 
+
+    // Caluclate U^-1
+    double upper_inverse[n][n];
+    memset(upper_inverse, 0, sizeof(upper_inverse));
+    for(int i = n - 1; i >= 0; i--)
+    {
+        upper_inverse[i][i] = 1 / upper[i][i];
+        for(int j = n - 1; j > i; j--)
+        {
+            double sum = 0;
+            for(int k = j; k > i; k--)
+                sum += upper[i][k] * upper_inverse[k][j];
+            upper_inverse[i][j] = - sum * upper_inverse[i][i];
+        }
+    }
+
+    for(int i = 0; i < n; i++)
+    {
+        for(int j = 0; j < n; j++)
+            cout << upper_inverse[i][j] << " ";
+        cout << endl;
+    }
+    cout << endl;
+
+    Matrix c(n, n);
+    c.zero_set();
+
+    return c;
 }
 
 double Matrix::det()
@@ -419,11 +459,33 @@ void Matrix::test()
 {
     assert(m_num_rows == m_num_cols && m_num_rows == 3);    // careful with compare expression
 
-    double test[3][3] = {{1, 5, 0}, {2, 3, -1}, {0, -2, 0}};
+    double test[3][3] = {{1, 2, -1}, {-2, 0, 1}, {1, -1, 0}};
+    // test case        {{1, 5, 0}, {2, 3, -1}, {0, -2, 0}};
     for(int i = 0; i < 3; i++)
         for(int j = 0; j < 3; j++)
             m_data[i][j] = test[i][j];
 }
+
+void Matrix::zero_set()
+{
+    for(int i = 0; i < m_num_rows; i++)
+        for(int j = 0; j < m_num_cols; j++)
+            m_data[i][j] = 0;
+}
+
+class LU
+{
+private:
+    Matrix lower;
+    Matrix upper;
+public:
+    LU(const Matrix&)
+    {
+        // logic here
+    }
+
+    // ? need a destructor ?
+};
 
 // Driver code
 int main(void)
@@ -432,12 +494,15 @@ int main(void)
     // Matrix B(2, 2);
     A.test();
     A.display();
-    // C.display();
-    Vector b(3);
-    b.set_data();
 
-    Vector C = A * b;
-    C.display();
+    Matrix B = A^-1;
+    B.display();
+    // C.display();
+//    Vector b(3);
+//    b.set_data();
+//
+//    Vector C = A * b;
+//    C.display();
 //    A.test();
 //    A.display();
 //
