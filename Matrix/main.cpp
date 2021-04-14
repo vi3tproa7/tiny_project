@@ -68,7 +68,15 @@ public:
     friend Vector operator*(const Matrix& a, const Vector& b);
 
     // Matrix Transpose
-    Matrix operator^(string T);
+    Matrix operator^(char T);
+
+    // Calculate lower matrix
+    // in LU decomposition
+    Matrix lower();
+
+    // Calculate upper matrix
+    // in LU decomposition
+    Matrix upper();
 
     // Matrix Inverse, i must be -1
     Matrix operator^(int i);
@@ -81,11 +89,7 @@ public:
 
     // Set all elements of matrix
     // to zero for calculating
-    void zero_set();
-
-    // LU Decomposition, Need both L and U
-    // only choice is a class ?
-    friend class LU;
+    void set_zero();
 };
 
 // This constructor allocates memory for the matrix
@@ -279,9 +283,9 @@ Vector operator*(const Matrix& a, const Vector& b)
     return c;
 }
 
-Matrix Matrix::operator^(string T)
+Matrix Matrix::operator^(char T)
 {
-    assert(T == "T"); // OK, make sure the user mean A-transpose
+    assert(T == 'T'); // OK, make sure the user mean A-transpose
 
     Matrix c(m_num_cols, m_num_rows);    // Size of transpose matrix is reversed
     for(int i = 0; i < m_num_cols; i++)
@@ -291,11 +295,8 @@ Matrix Matrix::operator^(string T)
     return c;
 }
 
-Matrix Matrix::operator^(int i)
+Matrix Matrix::lower()
 {
-    assert(i == -1);
-    assert(m_num_rows == m_num_cols && m_num_rows!= 0);   // only square matrix has inverse
-
     int n = m_num_rows;
     double lower[n][n], upper[n][n];
     memset(lower, 0, sizeof(lower));
@@ -336,65 +337,16 @@ Matrix Matrix::operator^(int i)
         }
     }
 
-    // be sure that the input matrix have inverse
-    double det = 1;
-
-    for(int i = 0; i < n; i++)
-        det *= upper[i][i];
-    if(det == 0)
-    {
-        cout << "The input matrix has det = 0, can not inverse!";
-        exit(-1);
-    }
-
-    // Calculate L^-1
-
-    for(int i = 0; i < n; i++)
-        for(int j = 0; j < i; j++)
-            lower[i][j] = -lower[i][j];  // order of (-)unary higher than (=)assignment operator
-
-    for(int i = 0; i < n; i++)
-    {
-        for(int j = 0; j < n; j++)
-            cout << lower[i][j] << " ";
-        cout << endl;
-    }
-    cout << endl;
-
-
-    // Caluclate U^-1
-    double upper_inverse[n][n];
-    memset(upper_inverse, 0, sizeof(upper_inverse));
-    for(int i = n - 1; i >= 0; i--)
-    {
-        upper_inverse[i][i] = 1 / upper[i][i];
-        for(int j = n - 1; j > i; j--)
-        {
-            double sum = 0;
-            for(int k = j; k > i; k--)
-                sum += upper[i][k] * upper_inverse[k][j];
-            upper_inverse[i][j] = - sum * upper_inverse[i][i];
-        }
-    }
-
-    for(int i = 0; i < n; i++)
-    {
-        for(int j = 0; j < n; j++)
-            cout << upper_inverse[i][j] << " ";
-        cout << endl;
-    }
-    cout << endl;
-
     Matrix c(n, n);
-    c.zero_set();
+    for(int i = 0; i < n; i++)
+        for(int j = 0; j < n; j++)
+            c.m_data[i][j] = lower[i][j];
 
     return c;
 }
 
-double Matrix::det()
+Matrix Matrix::upper()
 {
-    assert(m_num_rows == m_num_cols && m_num_rows!= 0);   // only square matrix has determinant
-
     int n = m_num_rows;
     double lower[n][n], upper[n][n];
     memset(lower, 0, sizeof(lower));
@@ -435,7 +387,7 @@ double Matrix::det()
         }
     }
 
-/* old code for testing, do not want to delete
+    /* old code for testing, do not want to delete
    to remind me that the need of doing unit/func test carefully
    before going further or integrating in the system*/
 //    for(int i = 0; i < n; i++)
@@ -446,10 +398,86 @@ double Matrix::det()
 //    }
 //    cout << endl;
 
+    Matrix c(n, n);
+    for(int i = 0; i < n; i++)
+        for(int j = 0; j < n; j++)
+            c.m_data[i][j] = upper[i][j];
+
+    return c;
+}
+
+Matrix Matrix::operator^(int i)
+{
+    assert(i == -1);
+    assert(m_num_rows == m_num_cols && m_num_rows!= 0);   // only square matrix has inverse
+
+    // be sure that the input matrix have inverse
+    assert(this->det() != 0);
+
+    int n = m_num_rows;
+    // Calculate L^-1
+    Matrix lower = this->lower();
+    Matrix lower_inverse(n, n);
+    lower_inverse.set_zero();
+
+    /* Wrong here */
+    for(int i = 0; i < n; i++)
+    {
+        lower_inverse.m_data[i][i] = 1 / lower.m_data[i][i];
+        for(int j = 0; j < i; j++)
+        {
+            double sum = 0;
+            for(int k = j; k < i; k++)
+                sum += lower.m_data[i][k] * lower_inverse.m_data[k][j];
+            lower_inverse.m_data[i][j] = - sum * lower_inverse.m_data[i][i];
+        }
+    }
+    lower_inverse.display();
+
+//    for(int i = 0; i < n; i++)
+//    {
+//        for(int j = 0; j <= i; j++)
+//        {
+//            if(i == j)
+//                lower_inverse.m_data[i][j] = lower.m_data[i][j];
+//            else
+//                lower_inverse.m_data[i][j] = - lower.m_data[i][j];
+//        }
+//    }   // for clean code
+
+
+    // Caluclate U^-1
+    Matrix upper = this->upper();
+    Matrix upper_inverse(n, n);
+    upper_inverse.set_zero();
+
+    for(int i = n - 1; i >= 0; i--)
+    {
+        upper_inverse.m_data[i][i] = 1 / upper.m_data[i][i];
+        for(int j = n - 1; j > i; j--)
+        {
+            double sum = 0;
+            for(int k = j; k > i; k--)
+                sum += upper.m_data[i][k] * upper_inverse.m_data[k][j];
+            upper_inverse.m_data[i][j] = - sum * upper_inverse.m_data[i][i];
+        }
+    }
+    upper_inverse.display();
+
+    Matrix c = upper_inverse * lower_inverse;
+    return c;
+}
+
+double Matrix::det()
+{
+    assert(m_num_rows == m_num_cols && m_num_rows!= 0);   // only square matrix has determinant
+
+    Matrix upper = this->upper();
+    int n = m_num_rows;
     double det = 1;
 
     for(int i = 0; i < n; i++)
-        det *= upper[i][i];
+        det *= upper.m_data[i][i];
 
     return det;
 }
@@ -466,26 +494,13 @@ void Matrix::test()
             m_data[i][j] = test[i][j];
 }
 
-void Matrix::zero_set()
+void Matrix::set_zero()
 {
     for(int i = 0; i < m_num_rows; i++)
         for(int j = 0; j < m_num_cols; j++)
             m_data[i][j] = 0;
 }
 
-class LU
-{
-private:
-    Matrix lower;
-    Matrix upper;
-public:
-    LU(const Matrix&)
-    {
-        // logic here
-    }
-
-    // ? need a destructor ?
-};
 
 // Driver code
 int main(void)
@@ -495,9 +510,11 @@ int main(void)
     A.test();
     A.display();
 
-    Matrix B = A^-1;
+    Matrix B = A ^ -1 ;
     B.display();
-    // C.display();
+
+//    cout << A.det();
+//    C.display();
 //    Vector b(3);
 //    b.set_data();
 //
