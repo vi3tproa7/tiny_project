@@ -78,14 +78,20 @@ public:
     // in LU decomposition
     Matrix upper();
 
-    // Matrix Inverse, i must be -1
-    Matrix operator^(int i);
-
     // Matrix Determinant
     double det();
 
-    // Matrix test value
+    // Matrix Inverse, i must be -1
+    Matrix operator^(int i);
+
+    // Pseudo Inverse of a Matrix
+    Matrix pseudo_inverse();
+
+    // Matrix test value for 3x3 Matrix
     void test();
+
+    // Matrix test value for 4x4 Matrix
+    void test_2();
 
     // Set all elements of matrix
     // to zero for calculating
@@ -151,7 +157,7 @@ void Matrix::display()
     for(int i = 0; i < m_num_rows; i++)
     {
         for(int j = 0; j < m_num_cols; j++)
-            cout << setw(5) << m_data[i][j];
+            cout << setw(11) << m_data[i][j];
         cout << endl;
     }
     cout << endl;
@@ -420,7 +426,6 @@ Matrix Matrix::operator^(int i)
     Matrix lower_inverse(n, n);
     lower_inverse.set_zero();
 
-    /* Wrong here */
     for(int i = 0; i < n; i++)
     {
         lower_inverse.m_data[i][i] = 1 / lower.m_data[i][i];
@@ -432,8 +437,9 @@ Matrix Matrix::operator^(int i)
             lower_inverse.m_data[i][j] = - sum * lower_inverse.m_data[i][i];
         }
     }
-    lower_inverse.display();
+    // lower_inverse.display(); // code for testing
 
+/* Wrong code because of someone's incorrect algorithm => be careful */
 //    for(int i = 0; i < n; i++)
 //    {
 //        for(int j = 0; j <= i; j++)
@@ -444,7 +450,6 @@ Matrix Matrix::operator^(int i)
 //                lower_inverse.m_data[i][j] = - lower.m_data[i][j];
 //        }
 //    }   // for clean code
-
 
     // Caluclate U^-1
     Matrix upper = this->upper();
@@ -462,7 +467,7 @@ Matrix Matrix::operator^(int i)
             upper_inverse.m_data[i][j] = - sum * upper_inverse.m_data[i][i];
         }
     }
-    upper_inverse.display();
+    // upper_inverse.display(); // code for testing
 
     Matrix c = upper_inverse * lower_inverse;
     return c;
@@ -482,15 +487,37 @@ double Matrix::det()
     return det;
 }
 
+Matrix Matrix::pseudo_inverse()
+{
+    // too fool, forget how to call the current object by (*this)
+    // => the true meaning of return *this to a reference or to a object itself
+    Matrix c = ((((*this)^'T') * (*this))^-1) * ((*this)^'T') ;
+
+    return c;
+}
+
 // just test for 3x3 matrix
 void Matrix::test()
 {
     assert(m_num_rows == m_num_cols && m_num_rows == 3);    // careful with compare expression
 
-    double test[3][3] = {{1, 2, -1}, {-2, 0, 1}, {1, -1, 0}};
-    // test case        {{1, 5, 0}, {2, 3, -1}, {0, -2, 0}};
+    double test[3][3] = {{1, 1, 1}, {0, 1, 1}, {0, 3, 0}};
+    // test case 1      {{1, 5, 0}, {2, 3, -1}, {0, -2, 0}};
+    // test case 2      {{0, 1, 1}, {1, 0, 1}, {2, 3, 0}};
+    // test case 3      {{1, 2, -1}, {-2, 0, 1}, {1, -1, 0}};
     for(int i = 0; i < 3; i++)
         for(int j = 0; j < 3; j++)
+            m_data[i][j] = test[i][j];
+}
+
+void Matrix::test_2()
+{
+    assert(m_num_rows == m_num_cols && m_num_rows == 4);
+
+    double test[4][4] = {{3, -7, -2, 2}, {-3, 5, 1,0}, {6, -4, 0, -5}, {-9, 5, -5, 0}};
+
+    for(int i = 0; i < 4; i++)
+        for(int j = 0; j < 4; j++)
             m_data[i][j] = test[i][j];
 }
 
@@ -505,9 +532,10 @@ void Matrix::set_zero()
 // Driver code
 int main(void)
 {
-    Matrix A(3, 3);
+    // Matrix A(3, 3);
     // Matrix B(2, 2);
-    A.test();
+    Matrix A(4, 4);
+    A.test_2();
     A.display();
 
     Matrix B = A ^ -1 ;
