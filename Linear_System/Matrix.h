@@ -29,10 +29,10 @@ public:
     ~Matrix();
 
     // Method to get the number of rows
-    int get_number_of_rows();
+    int get_number_of_rows() const;
 
     // Method to get the number of columns
-    int get_number_of_cols();
+    int get_number_of_cols() const;
 
     // Display method
     void display();
@@ -146,12 +146,12 @@ Matrix::~Matrix()
     delete[] m_data;
 }
 
-int Matrix::get_number_of_rows()
+int Matrix::get_number_of_rows() const
 {
     return m_num_rows;
 }
 
-int Matrix::get_number_of_cols()
+int Matrix::get_number_of_cols() const
 {
     return m_num_cols;
 }

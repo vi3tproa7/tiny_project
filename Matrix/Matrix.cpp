@@ -1,6 +1,5 @@
-// Matrix.h
-#ifndef Matrix_h
-#define Matrix_h
+// Matrix class
+// Written after learned smt about dynamic allocation of 2D_array
 
 #include <iostream>
 #include <cassert>
@@ -532,4 +531,33 @@ void Matrix::set_zero()
             m_data[i][j] = 0;
 }
 
-#endif // Matrix_h
+
+// Driver code
+int main(void)
+{
+    // Matrix A(3, 3);
+    // Matrix B(2, 2);
+    Matrix A(4, 4);
+    A.test_2();
+    A.display();
+
+    Matrix B = A ^ -1 ;
+    B.display();
+
+//    cout << A.det();
+//    C.display();
+//    Vector b(3);
+//    b.set_data();
+//
+//    Vector C = A * b;
+//    C.display();
+//    A.test();
+//    A.display();
+//
+//    cout << A.det();
+//
+//    Matrix C = (A * 2);
+//    C.display();
+
+    return 0;
+}

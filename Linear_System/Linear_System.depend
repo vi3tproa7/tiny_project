@@ -1,0 +1,17 @@
+# depslib dependency file v1.0
+1618880885 source:c:\users\yeuha\desktop\c++\big_project\tiny_project\linear_system\main.cpp
+	<iostream>
+	<cassert>
+	"Vector.h"
+	"Matrix.h"
+
+1618880914 c:\users\yeuha\desktop\c++\big_project\tiny_project\linear_system\vector.h
+	<iostream>
+	<cassert>
+
+1618880871 c:\users\yeuha\desktop\c++\big_project\tiny_project\linear_system\matrix.h
+	<iostream>
+	<cassert>
+	<cstring>
+	<iomanip>
+

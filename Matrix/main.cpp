@@ -5,7 +5,7 @@
 #include <cassert>
 #include <cstring>
 #include "Vector.h"
-#include <bits/stdc++.h>
+#include <iomanip>
 using namespace std;
 
 class Matrix
