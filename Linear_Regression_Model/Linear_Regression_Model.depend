@@ -1,0 +1,25 @@
+# depslib dependency file v1.0
+1619165925 source:c:\users\yeuha\desktop\c++\big_project\tiny_project\linear_regression_model\main.cpp
+	<iostream>
+	<fstream>
+	"Vector.h"
+	"Matrix.h"
+	"Linear_System.h"
+
+1619136440 c:\users\yeuha\desktop\c++\big_project\tiny_project\linear_regression_model\vector.h
+	<iostream>
+	<cassert>
+
+1619166424 c:\users\yeuha\desktop\c++\big_project\tiny_project\linear_regression_model\matrix.h
+	<iostream>
+	<cassert>
+	<cstring>
+	<iomanip>
+
+1619139985 c:\users\yeuha\desktop\c++\big_project\tiny_project\linear_regression_model\linear_system.h
+	<iostream>
+	<cassert>
+	<cmath>
+	"Vector.h"
+	"Matrix.h"
+

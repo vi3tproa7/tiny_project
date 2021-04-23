@@ -91,6 +91,9 @@ public:
     // Pseudo Inverse of a Matrix
     Matrix pseudo_inverse();
 
+    // Pseudo Inverse with Tikhonov regularization
+    Matrix pseudo_inverse_with_Tikhonov();
+
     // Matrix test value for 3x3 Matrix
     void test();
 
@@ -496,6 +499,22 @@ Matrix Matrix::pseudo_inverse()
     // too fool, forget how to call the current object by (*this)
     // => the true meaning of return *this to a reference or to a object itself
     Matrix c = ((((*this)^'T') * (*this))^-1) * ((*this)^'T') ;
+
+    return c;
+}
+
+Matrix Matrix::pseudo_inverse_with_Tikhonov()
+{
+    double lambda = 0.9;
+
+    Matrix identity(m_num_cols, m_num_cols);
+    for(int i = 0; i < m_num_cols; i++)
+        for(int j = 0; j < m_num_cols; j++)
+            if(i == j)
+                identity.m_data[i][j] = 1;
+
+    //  identity.display();
+    Matrix c = ((((*this)^'T') * (*this) - (lambda * identity))^-1) * ((*this)^'T');
 
     return c;
 }

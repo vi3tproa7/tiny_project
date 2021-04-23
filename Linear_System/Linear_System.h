@@ -1,4 +1,7 @@
 // Linear System class to solve a linear system
+// Linear_System.h
+#ifndef Linear_System_h
+#define Linear_System_h
 
 #include <iostream>
 #include <cassert>
@@ -127,7 +130,6 @@ Vector Linear_System::solve()
     return solution;
 }
 
-int main(void)
-{
-    return 0;
-}
+#endif // Linear_System_h
+
+
