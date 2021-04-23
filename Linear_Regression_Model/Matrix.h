@@ -92,7 +92,7 @@ public:
     Matrix pseudo_inverse();
 
     // Pseudo Inverse with Tikhonov regularization
-    Matrix pseudo_inverse_with_Tikhonov();
+    Matrix pseudo_inverse_with_Tikhonov(double& lambda);
 
     // Matrix test value for 3x3 Matrix
     void test();
@@ -503,9 +503,9 @@ Matrix Matrix::pseudo_inverse()
     return c;
 }
 
-Matrix Matrix::pseudo_inverse_with_Tikhonov()
+Matrix Matrix::pseudo_inverse_with_Tikhonov(double& lambda)
 {
-    double lambda = 0.9;
+    // double lambda = 0.9;
 
     Matrix identity(m_num_cols, m_num_cols);
     for(int i = 0; i < m_num_cols; i++)
