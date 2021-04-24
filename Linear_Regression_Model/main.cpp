@@ -5,6 +5,7 @@
 #include "Vector.h"
 #include "Matrix.h"
 #include "Linear_System.h"
+#include "Pos_Def_Sym_Linear_System.h"
 using namespace std;
 
 int main()

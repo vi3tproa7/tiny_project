@@ -1,7 +1,6 @@
 // Vector.h
 #ifndef Vector_h
 #define Vector_h
-// #pragma once
 
 #include <iostream>
 #include <cassert>

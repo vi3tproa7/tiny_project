@@ -1,9 +1,10 @@
 // Vector.h
 #ifndef Vector_h
 #define Vector_h
-// #pragma once
+
 #include <iostream>
 #include <cassert>
+#include <cmath>
 using namespace std;
 
 // need a prototype of class Matrix here for operation
@@ -70,6 +71,9 @@ public:
 
     // Matrix Multiplication between Matrix and Vector
     friend Vector operator*(const Matrix& a, const Vector& b);
+
+    // Calculate Vector Norm
+    double vector_norm();
 };
 
 Vector::Vector(int m_size)
@@ -222,6 +226,10 @@ bool Vector::operator[](int i)
         return false;
 }
 
+double Vector::vector_norm()
+{
+    return sqrt((*this) * (*this));
+}
 #endif // Vector_h
 
 
