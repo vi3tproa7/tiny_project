@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1619320469 source:c:\users\yeuha\desktop\c++\big_project\tiny_project\linear_regression_model\main.cpp
+1619329733 source:c:\users\yeuha\desktop\c++\big_project\tiny_project\linear_regression_model\main.cpp
 	<iostream>
 	<fstream>
 	"Vector.h"
@@ -12,7 +12,7 @@
 	<cassert>
 	<cmath>
 
-1619212851 c:\users\yeuha\desktop\c++\big_project\tiny_project\linear_regression_model\matrix.h
+1619329359 c:\users\yeuha\desktop\c++\big_project\tiny_project\linear_regression_model\matrix.h
 	<iostream>
 	<cassert>
 	<cstring>

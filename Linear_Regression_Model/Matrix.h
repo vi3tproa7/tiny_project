@@ -514,7 +514,7 @@ Matrix Matrix::pseudo_inverse_with_Tikhonov(double& lambda)
                 identity.m_data[i][j] = 1;
 
     //  identity.display();
-    Matrix c = ((((*this)^'T') * (*this) - (lambda * identity))^-1) * ((*this)^'T');
+    Matrix c = ((((*this)^'T') * (*this) + (lambda * identity))^-1) * ((*this)^'T');
 
     return c;
 }
