@@ -1,5 +1,3 @@
-// Finally, finish today
-
 #include <iostream>
 #include <fstream>
 #include "Vector.h"
@@ -14,9 +12,9 @@ int main()
     ifstream fin;
     fin.open("machine.data", ifstream::in);
 
-    // Just read 157 instances
-    Matrix A(157, 7);
-    Vector b(157);
+    // Just read 170 instances
+    Matrix A(170, 7);
+    Vector b(170);
     char cNum[10];
 
     if(!fin.is_open())
@@ -26,7 +24,7 @@ int main()
     }
 
     // Read the training instances
-    for(int i = 1; i <= 157; i++)
+    for(int i = 1; i <= 170; i++)
     {
         fin.ignore(100, ',').ignore(100, ',');
         for(int j = 1; j <= 7; j++)
@@ -45,12 +43,12 @@ int main()
         fin.ignore(20, '\n');
         // cout << endl;
     }
-    A.display();
+    // A.display();
 
-    // Read the testing instances
-    Matrix A_test(52, 7);
-    Vector b_test(52);
-    for(int i = 1; i <= 52; i++)
+    //  Read the testing instances
+    Matrix A_test(39, 7);
+    Vector b_test(39);
+    for(int i = 1; i <= 39; i++)
     {
         fin.ignore(100, ',').ignore(100, ',');
         for(int j = 1; j <= 7; j++)
@@ -73,72 +71,26 @@ int main()
     }
     fin.close();
 
-
-    // Data normalization for A and A_test
-    for(int j = 1; j <= 6; j++)
-    {
-        double A_max = 0, A_min = 10000000;
-        for(int i = 1; i <= 157; i++)
-        {
-            if(A(i, j) > A_max)
-                A_max = A(i, j);
-            if(A(i, j) < A_min)
-                A_min = A(i, j);
-        }
-
-        for(int i = 1; i <= 157; i++)
-        {
-            A(i, j) = (A(i, j) - A_min) / (A_max - A_min);
-        }
-
-        for(int i = 1; i <= 52; i++)
-        {
-            A_test(i, j) = (A_test(i, j) - A_min) / (A_max - A_min);
-        }
-    }
-
-    // Data normalization for b
-    double b_max = 0, b_min = 100000;
-    for(int i = 1; i <= 157; i++)
-    {
-        if(b(i) > b_max)
-            b_max = b(i);
-        if(b(i) < b_min)
-            b_min = b(i);
-    }
-
-    for(int i = 1; i <= 157; i++)
-    {
-        b(i) = (b(i) - b_min) / (b_max - b_min);
-    }
-
     // Find best lambda that have the least RMSE
-    for(double lambda = 1.4; lambda <= 1.6; lambda += 0.01)
+    for(double lambda = 120; lambda <= 130; lambda += 1)
     {
         Vector x = A.pseudo_inverse_with_Tikhonov(lambda) * b;
         x.display();
         Vector y_hat = A_test * x;
-
-
-        // Reverse the normalization
-        for(int i = 1; i <= 52; i++)
-        {
-            y_hat(i) = y_hat(i) * (b_max - b_min) + b_min;
-        }
         y_hat.display();
 
-        // Calculate RMSE
+        // Calculate RMSE and deviation
         double sum = 0;
         double sum_2 = 0;
-        for(int i = 1; i <= 52; i++)
+        for(int i = 1; i <= 39; i++)
         {
             // cout << b_test(i) << " " << c(i) << endl;
             sum += (y_hat(i) - b_test(i)) * (y_hat(i) - b_test(i));
             sum_2 += fabs(y_hat(i) - b_test(i)) / b_test(i) * 100;
         }
         // cout << sum;
-        double RMSE = sqrt(sum / 52);
-        double average_deviation = sum_2 / 52;
+        double RMSE = sqrt(sum / 39);
+        double average_deviation = sum_2 / 39;
         cout << RMSE << " " << average_deviation << " " << lambda << endl << endl;
     }
     return 0;
