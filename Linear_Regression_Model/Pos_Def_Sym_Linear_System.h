@@ -11,8 +11,11 @@ const double NEARZERO = 1.0e-10;
 class Pos_Def_Sym_Linear_System : public Linear_System
 {
 public:
+    Pos_Def_Sym_Linear_System(const Matrix& A, const Vector& b);
     Vector solve();
 };
+
+Pos_Def_Sym_Linear_System::Pos_Def_Sym_Linear_System(const Matrix& A, const Vector& b) : Linear_System(A, b){}
 
 Vector Pos_Def_Sym_Linear_System::solve()
 {
