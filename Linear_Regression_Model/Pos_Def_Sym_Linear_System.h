@@ -47,7 +47,7 @@ Vector Pos_Def_Sym_Linear_System::solve()
 
     while (k < n)
     {
-        Vector Rold = R;                                    // Store previous residual
+        Vector R_old = R;                                    // Store previous residual
         Vector AP = A * P;
 
         double alpha = (R * R) / max(P * AP, NEARZERO );
@@ -57,7 +57,7 @@ Vector Pos_Def_Sym_Linear_System::solve()
         if (R.vector_norm() < TOLERANCE)                    // Convergence test
             break;
 
-        double beta = (R * R) / max( Rold * Rold, NEARZERO );
+        double beta = (R * R) / max( R_old * R_old, NEARZERO );
         P = 1.0 * R + beta * P;                             // Next gradient
 
         k++;

@@ -32,7 +32,9 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="Linear_System.h" />
 		<Unit filename="Matrix.h" />
+		<Unit filename="Pos_Def_Sym_Linear_System.h" />
 		<Unit filename="Vector.h" />
 		<Unit filename="main.cpp" />
 		<Extensions>

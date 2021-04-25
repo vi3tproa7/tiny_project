@@ -89,39 +89,39 @@ Vector Linear_System::solve()
             // swap matrix rows k + 1 with row + 1
             for (int i = 0; i < m_size; i++)
             {
-                double temp = rA(k +1,i+1);
-                rA(k+1,i+1) = rA(row+1,i+1);
-                rA(row+1,i+1) = temp;
+                double temp = rA(k + 1, i + 1);
+                rA(k + 1, i + 1) = rA(row + 1, i + 1 );
+                rA(row + 1, i + 1) = temp;
             }
 
             // swap vector entries k+1 with row+1
-            double temp = rb(k+1);
-            rb(k+1) = rb(row+1);
-            rb(row+1) = temp;
+            double temp = rb(k + 1);
+            rb(k + 1) = rb(row + 1);
+            rb(row + 1) = temp;
         }
 
         // create zeros in lower part of column k
-        for (int i=k+1; i<m_size; i++)
+        for (int i = k + 1; i < m_size; i++)
         {
-            m(i+1) = rA(i+1,k+1)/rA(k+1,k+1);
-            for (int j=k; j<m_size; j++)
+            m(i + 1) = rA(i + 1, k + 1)/rA(k + 1, k + 1);
+            for (int j = k; j < m_size; j++)
             {
-                rA(i+1,j+1) -= rA(k+1,j+1)*m(i+1);
+                rA(i + 1,j + 1) -= rA(k + 1, j + 1) * m(i + 1);
             }
 
-            rb(i+1) -= rb(k+1)*m(i+1);
+            rb(i + 1) -= rb(k + 1) * m(i + 1);
         }
     }
 
     // back substitution
-    for (int i=m_size-1; i>-1; i--)
+    for (int i = m_size - 1; i > -1; i--)
     {
-        solution(i+1) = rb(i+1);
-        for (int j=i+1; j<m_size; j++)
+        solution(i + 1) = rb(i + 1);
+        for (int j = i + 1; j < m_size; j++)
         {
-            solution(i+1) -= rA(i+1,j+1)*solution(j+1);
+            solution(i + 1) -= rA(i + 1,j + 1)*solution(j + 1);
         }
-        solution(i+1) /= rA(i+1,i+1);
+        solution(i + 1) /= rA(i + 1, i + 1);
     }
 
     return solution;

@@ -93,6 +93,7 @@ int main()
         double average_deviation = sum_2 / 39;
         cout << RMSE << " " << average_deviation << " " << lambda << endl << endl;
     }
+
     return 0;
 }
 
